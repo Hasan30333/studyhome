@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>스터디홈 | 집에서 받는 기숙학원 관리</title>
+<meta name="description" content="전국 어디서나 매일 1:1 화상 코칭으로 관리받는 화상 관리형 독서실 스터디홈. 학부모 실시간 알림, 출결·태도 관리, 과목 코칭까지." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy-900: #0A2540;
+    --navy-800: #102C4F;
+    --navy-700: #1B3A5C;
+    --navy-600: #25497A;
+    --navy-100: #E7EDF6;
+    --navy-50:  #F4F7FB;
+    --gold:     #C4A35A;
+    --kakao:    #FEE500;
+    --kakao-text: #391B1B;
+    --text:     #1A1F2C;
+    --muted:    #5A6478;
+    --line:     #E2E7EF;
+    --white:    #FFFFFF;
+    --shadow-sm: 0 4px 12px rgba(10, 37, 64, 0.06);
+    --shadow-md: 0 10px 30px rgba(10, 37, 64, 0.10);
+    --shadow-lg: 0 20px 60px rgba(10, 37, 64, 0.18);
+    --radius:   14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
+    color: var(--text);
+    background: var(--white);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+  .container { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+  .section { padding: 96px 0; }
+  .section-sm { padding: 64px 0; }
+  .eyebrow {
+    display: inline-block;
+    color: var(--navy-700);
+    background: var(--navy-100);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 16px;
+  }
+  .h1 { font-size: clamp(32px, 5vw, 56px); font-weight: 900; line-height: 1.2; letter-spacing: -0.02em; word-break: keep-all; }
+  .h2 { font-size: clamp(26px, 3.4vw, 40px); font-weight: 900; line-height: 1.25; letter-spacing: -0.02em; word-break: keep-all; }
+  .h3 { font-size: 20px; font-weight: 700; word-break: keep-all; }
+  .lead { font-size: clamp(16px, 1.6vw, 19px); color: var(--muted); }
+  .center { text-align: center; }
+
+  /* ================= NAV ================= */
+  .nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: saturate(180%) blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 68px;
+  }
+  .logo { display: flex; align-items: center; color: var(--navy-900); text-decoration: none; }
+  .footer .logo { color: var(--white); }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a { color: var(--text); font-size: 15px; font-weight: 500; }
+  .nav-links a:hover { color: var(--navy-700); }
+  .nav-cta {
+    background: var(--kakao); color: var(--kakao-text);
+    padding: 10px 18px; border-radius: 10px; font-weight: 700; font-size: 14px;
+  }
+  .nav-cta:hover { filter: brightness(0.97); }
+  @media (max-width: 760px) {
+    .nav-links { display: none; }
+  }
+
+  /* ================= HERO ================= */
+  .hero { overflow: hidden; background: var(--navy-900); }
+  .hero-split {
+    display: grid; grid-template-columns: 1fr 1fr;
+    min-height: 580px;
+  }
+  .hero-content {
+    background:
+      radial-gradient(ellipse at 10% 90%, rgba(196,163,90,0.15), transparent 55%),
+      linear-gradient(160deg, var(--navy-900), var(--navy-800));
+    display: flex; align-items: center; justify-content: flex-end;
+  }
+  .hero-content-inner {
+    width: 100%; max-width: 600px;
+    padding: 80px 48px 80px 24px;
+  }
+  .hero-eyebrow-label {
+    font-size: 14px; font-weight: 600; letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.58); margin-bottom: 14px;
+  }
+  .hero-title {
+    font-size: clamp(38px, 4.6vw, 60px); font-weight: 900;
+    line-height: 1.12; letter-spacing: -0.03em;
+    word-break: keep-all; color: var(--white);
+  }
+  .hero-title .accent {
+    color: var(--gold); display: block;
+    font-size: clamp(44px, 5.4vw, 70px);
+  }
+  .hero-tagline {
+    color: rgba(255,255,255,0.72); font-size: clamp(15px, 1.4vw, 17px);
+    margin-top: 20px; font-weight: 500;
+  }
+  .hero-features {
+    display: flex; gap: 24px; margin-top: 32px; flex-wrap: wrap;
+  }
+  .hero-feature {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 8px; text-align: center;
+    color: rgba(255,255,255,0.8); font-size: 12.5px; line-height: 1.4;
+  }
+  .hero-feature-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14);
+    display: grid; place-items: center;
+  }
+  .btn-kakao-hero {
+    margin-top: 36px;
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--kakao); color: var(--kakao-text);
+    padding: 16px 30px; border-radius: 12px;
+    font-weight: 800; font-size: 17px;
+    box-shadow: 0 8px 24px rgba(254,229,0,0.3);
+    transition: transform 0.15s, box-shadow 0.2s;
+  }
+  .btn-kakao-hero:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(254,229,0,0.42); }
+  .kakao-talk-badge {
+    background: var(--kakao-text); color: var(--kakao);
+    font-size: 11px; font-weight: 900; padding: 4px 7px;
+    border-radius: 5px; letter-spacing: 0.04em;
+  }
+  .hero-image { position: relative; overflow: hidden; }
+  .hero-image img {
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center top; display: block;
+  }
+  .cta-row {
+    margin-top: 36px; display: flex; gap: 12px; flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 16px 26px; border-radius: 12px; font-weight: 700; font-size: 16px;
+    transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.15s;
+  }
+  .btn-kakao {
+    background: var(--kakao); color: var(--kakao-text);
+    box-shadow: 0 8px 24px rgba(254, 229, 0, 0.25);
+  }
+  .btn-kakao:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(254,229,0,0.35); }
+  .kakao-icon {
+    width: 22px; height: 22px; border-radius: 5px;
+    background: var(--kakao-text); color: var(--kakao);
+    display: grid; place-items: center; font-size: 13px; font-weight: 900;
+  }
+  .hero-trust {
+    margin-top: 36px; display: flex; gap: 28px; flex-wrap: wrap;
+    color: rgba(255,255,255,0.65); font-size: 13.5px;
+  }
+  .hero-trust b { color: var(--white); font-weight: 700; }
+  @media (max-width: 900px) {
+    .hero-split { grid-template-columns: 1fr; }
+    .hero-content { justify-content: center; }
+    .hero-content-inner { padding: 56px 24px 48px; max-width: 100%; }
+    .hero-image { min-height: 300px; }
+  }
+  @media (max-width: 600px) {
+    .hero-features { gap: 16px; }
+    .hero-feature-icon { width: 42px; height: 42px; }
+  }
+
+  /* ================= PROBLEM ================= */
+  .problem { background: var(--navy-50); }
+  .problem-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    margin-top: 48px;
+  }
+  .problem-card {
+    background: var(--white); border-radius: var(--radius);
+    padding: 28px; box-shadow: var(--shadow-sm);
+    border: 1px solid var(--line);
+  }
+  .problem-card .qmark {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: var(--navy-100); color: var(--navy-700);
+    display: grid; place-items: center; font-weight: 900; font-size: 18px;
+    margin-bottom: 14px;
+  }
+  .problem-card h3 {
+    font-size: 17px; font-weight: 700; margin-bottom: 8px; color: var(--navy-900);
+  }
+  .problem-card p { color: var(--muted); font-size: 14.5px; }
+  @media (max-width: 800px) {
+    .problem-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ================= SERVICE ================= */
+  .service-intro {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center;
+    margin-bottom: 64px;
+  }
+  .service-intro p { color: var(--muted); margin-top: 16px; font-size: 16.5px; }
+  .check-list { margin-top: 24px; display: flex; flex-direction: column; gap: 10px; }
+  .check-list li {
+    list-style: none; display: flex; align-items: flex-start; gap: 10px;
+    font-size: 15px; color: var(--text);
+  }
+  .check-list li::before {
+    content: "✓"; flex-shrink: 0;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--navy-900); color: var(--white);
+    display: grid; place-items: center; font-size: 12px; font-weight: 900;
+    margin-top: 2px;
+  }
+  .service-visual {
+    background: var(--navy-50); border-radius: 18px; padding: 32px;
+    border: 1px solid var(--navy-100);
+  }
+  .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .stat-card {
+    background: var(--white); border-radius: 12px; padding: 20px;
+    border: 1px solid var(--line); text-align: center;
+  }
+  .stat-num { font-size: 28px; font-weight: 900; color: var(--navy-900); letter-spacing: -0.02em; }
+  .stat-label { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  @media (max-width: 800px) {
+    .service-intro { grid-template-columns: 1fr; gap: 32px; }
+  }
+
+  /* flow */
+  .flow {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+    margin-top: 16px;
+  }
+  .flow-step {
+    background: var(--white); border: 1px solid var(--line); border-radius: 12px;
+    padding: 22px 18px; position: relative; text-align: center;
+  }
+  .flow-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--navy-900); color: var(--white);
+    display: grid; place-items: center; font-weight: 900; font-size: 14px;
+    margin: 0 auto 12px;
+  }
+  .flow-step h4 { font-size: 15px; font-weight: 700; color: var(--navy-900); margin-bottom: 6px; }
+  .flow-step p { font-size: 13px; color: var(--muted); }
+  @media (max-width: 900px) {
+    .flow { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ================= DIFFERENTIATORS ================= */
+  .diff { background: var(--navy-900); color: var(--white); }
+  .diff .h2, .diff .lead { color: var(--white); }
+  .diff .lead { color: rgba(255,255,255,0.7); }
+  .diff-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+    margin-top: 56px;
+  }
+  .diff-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px; padding: 32px;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+  .diff-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(196,163,90,0.45);
+  }
+  .diff-icon {
+    width: 52px; height: 52px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--gold), #b08e3f);
+    display: grid; place-items: center; font-size: 22px;
+    margin-bottom: 18px;
+  }
+  .diff-card h3 { font-size: 20px; font-weight: 800; margin-bottom: 10px; }
+  .diff-card p { color: rgba(255,255,255,0.72); font-size: 15px; }
+  @media (max-width: 760px) {
+    .diff-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ================= PRICING ================= */
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+    margin-top: 56px;
+  }
+  .price-card {
+    background: var(--white); border: 1px solid var(--line);
+    border-radius: 16px; padding: 28px 22px;
+    display: flex; flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+  }
+  .price-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .price-card.featured {
+    background: var(--navy-900); color: var(--white);
+    border-color: var(--navy-900);
+    box-shadow: var(--shadow-lg);
+    transform: scale(1.03);
+  }
+  .price-card.featured:hover { transform: scale(1.03) translateY(-4px); }
+  .price-badge {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--gold); color: var(--navy-900);
+    padding: 5px 14px; border-radius: 999px;
+    font-size: 12px; font-weight: 800; letter-spacing: 0.02em;
+  }
+  .price-name { font-size: 15px; font-weight: 700; color: var(--navy-700); margin-bottom: 4px; }
+  .price-card.featured .price-name { color: var(--gold); }
+  .price-tag { display: flex; align-items: baseline; gap: 4px; margin: 14px 0 6px; }
+  .price-num { font-size: 28px; font-weight: 900; letter-spacing: -0.02em; }
+  .price-unit { font-size: 14px; color: var(--muted); font-weight: 500; }
+  .price-card.featured .price-unit { color: rgba(255,255,255,0.65); }
+  .price-desc { font-size: 13.5px; color: var(--muted); margin-bottom: 18px; min-height: 40px; }
+  .price-card.featured .price-desc { color: rgba(255,255,255,0.75); }
+  .price-list { list-style: none; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .price-list li {
+    font-size: 13.5px; color: var(--text);
+    padding-left: 22px; position: relative;
+  }
+  .price-list li::before {
+    content: "✓"; position: absolute; left: 0; top: 0;
+    color: var(--navy-700); font-weight: 900;
+  }
+  .price-card.featured .price-list li { color: rgba(255,255,255,0.85); }
+  .price-card.featured .price-list li::before { color: var(--gold); }
+  .price-cta {
+    margin-top: 20px;
+    padding: 12px; border-radius: 10px;
+    background: var(--navy-50); color: var(--navy-900);
+    font-weight: 700; font-size: 14px; text-align: center;
+    transition: background 0.15s, color 0.15s;
+  }
+  .price-cta:hover { background: var(--navy-900); color: var(--white); }
+  .price-card.featured .price-cta { background: var(--kakao); color: var(--kakao-text); }
+  .price-card.featured .price-cta:hover { filter: brightness(0.95); }
+  .price-note { text-align: center; color: var(--muted); font-size: 13.5px; margin-top: 32px; }
+
+  @media (max-width: 1024px) {
+    .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+    .price-card.featured { transform: none; }
+    .price-card.featured:hover { transform: translateY(-4px); }
+  }
+  @media (max-width: 560px) {
+    .pricing-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ================= HOURS ================= */
+  .hours { background: var(--navy-50); }
+  .hours-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    margin-top: 48px;
+  }
+  .hours-card {
+    background: var(--white); border-radius: var(--radius);
+    padding: 32px; border: 1px solid var(--line);
+    text-align: center;
+  }
+  .hours-icon {
+    width: 56px; height: 56px; border-radius: 14px;
+    background: var(--navy-900); color: var(--white);
+    display: grid; place-items: center; font-size: 24px; margin: 0 auto 16px;
+  }
+  .hours-card h3 { font-size: 18px; font-weight: 800; color: var(--navy-900); margin-bottom: 6px; }
+  .hours-time { font-size: 26px; font-weight: 900; color: var(--navy-900); letter-spacing: -0.02em; margin: 10px 0; }
+  .hours-card p { color: var(--muted); font-size: 14px; }
+  @media (max-width: 760px) {
+    .hours-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ================= FAQ ================= */
+  .faq-list {
+    max-width: 820px; margin: 56px auto 0;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .faq-item {
+    background: var(--white); border: 1px solid var(--line);
+    border-radius: 12px; overflow: hidden;
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+  .faq-item[open] { border-color: var(--navy-700); box-shadow: var(--shadow-sm); }
+  .faq-item summary {
+    list-style: none; cursor: pointer;
+    padding: 22px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 16px; font-weight: 700; color: var(--navy-900);
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after {
+    content: "+"; font-size: 22px; color: var(--navy-700);
+    font-weight: 400; transition: transform 0.2s;
+  }
+  .faq-item[open] summary::after { content: "−"; }
+  .faq-body {
+    padding: 0 24px 22px; color: var(--muted); font-size: 15px; line-height: 1.7;
+  }
+
+  /* ================= FINAL CTA ================= */
+  .final-cta {
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(196,163,90,0.18), transparent 55%),
+      linear-gradient(135deg, var(--navy-900), var(--navy-700));
+    color: var(--white);
+    padding: 100px 0;
+    text-align: center;
+  }
+  .final-cta .h2 { color: var(--white); }
+  .final-cta p { color: rgba(255,255,255,0.78); margin-top: 16px; font-size: 17px; }
+  .final-cta .cta-row { justify-content: center; margin-top: 36px; }
+  .final-cta .hero-trust { justify-content: center; margin-top: 28px; }
+
+  /* ================= FOOTER ================= */
+  .footer {
+    background: #051527; color: rgba(255,255,255,0.55);
+    padding: 40px 0; font-size: 13.5px;
+  }
+  .footer-inner {
+    display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .footer .logo { color: var(--white); font-size: 17px; }
+  .footer-links { display: flex; gap: 20px; }
+  .footer-links a:hover { color: var(--white); }
+
+  /* helpers */
+  .text-gold { color: var(--gold); }
+  .underline-gold {
+    background: linear-gradient(transparent 60%, rgba(196,163,90,0.45) 60%);
+    padding: 0 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= NAV ================= -->
+<header class="nav">
+  <div class="container nav-inner">
+    <a href="#" class="logo">
+      <svg viewBox="0 0 420 78" width="185" height="33" xmlns="http://www.w3.org/2000/svg" aria-label="Study Home">
+        <g transform="translate(210,0)">
+          <path fill="none" stroke="currentColor" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" d="M40 18 L74 3 L108 18"/>
+          <text y="66" text-anchor="middle" font-family="Inter, Pretendard, -apple-system, BlinkMacSystemFont, sans-serif" font-weight="700" font-size="48" fill="currentColor" letter-spacing="-0.5">Study<tspan dx="6">Home</tspan></text>
+        </g>
+      </svg>
+    </a>
+    <nav class="nav-links">
+      <a href="#service">서비스</a>
+      <a href="#diff">차별점</a>
+      <a href="#pricing">요금제</a>
+      <a href="#hours">운영시간</a>
+      <a href="#faq">자주 묻는 질문</a>
+    </nav>
+    <a href="https://pf.kakao.com/_JCkxbX/chat" target="_blank" rel="noopener" class="nav-cta">카카오톡 상담</a>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="hero-split">
+
+    <!-- 왼쪽: 텍스트 -->
+    <div class="hero-content">
+      <div class="hero-content-inner">
+        <p class="hero-eyebrow-label">화상 관리형 독서실</p>
+        <h1 class="hero-title">
+          집에서 받는
+          <span class="accent">기숙학원 관리</span>
+        </h1>
+        <p class="hero-tagline">전국 어디서나, 매일 1:1 관리</p>
+
+        <div class="hero-features">
+          <div class="hero-feature">
+            <div class="hero-feature-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <span>매일 1:1 코칭</span>
+          </div>
+          <div class="hero-feature">
+            <div class="hero-feature-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </div>
+            <span>학부모<br>실시간 알림</span>
+          </div>
+          <div class="hero-feature">
+            <div class="hero-feature-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <span>전국<br>어디서나</span>
+          </div>
+          <div class="hero-feature">
+            <div class="hero-feature-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+            </div>
+            <span>벌점제로<br>자기관리</span>
+          </div>
+        </div>
+
+        <a href="https://pf.kakao.com/_JCkxbX/chat" target="_blank" rel="noopener" class="btn-kakao-hero">
+          <span class="kakao-talk-badge">TALK</span>
+          카카오톡 상담 신청
+        </a>
+      </div>
+    </div>
+
+    <!-- 오른쪽: 사진 (임시 스톡 이미지 — 추후 교체) -->
+    <div class="hero-image">
+      <img
+        src="https://source.unsplash.com/featured/1200x800/?student,studying,korean"
+        alt="학생 화상 코칭 학습 장면"
+      />
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= PROBLEM ================= -->
+<section class="problem section">
+  <div class="container">
+    <div class="center" style="max-width: 720px; margin: 0 auto;">
+      <span class="eyebrow">이런 고민, 있으신가요?</span>
+      <h2 class="h2">학원도 다녀봤지만, 결국은 <span class="underline-gold">스스로 앉아있는 시간</span>이 문제였습니다.</h2>
+    </div>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="qmark">Q</div>
+        <h3>"학원 끝나고 집에 오면 핸드폰만 봐요"</h3>
+        <p>학원 수업은 듣지만, 정작 혼자 복습하고 문제 푸는 시간이 사라집니다. 결국 성적은 그대로입니다.</p>
+      </div>
+      <div class="problem-card">
+        <div class="qmark">Q</div>
+        <h3>"집 근처에 좋은 학원이 없어요"</h3>
+        <p>지방·소외 지역 학생일수록 선택지가 좁습니다. 양질의 관리를 받을 방법이 없어 답답합니다.</p>
+      </div>
+      <div class="problem-card">
+        <div class="qmark">Q</div>
+        <h3>"독서실에 가서도 휴대폰만 봐요"</h3>
+        <p>독서실은 자리만 제공할 뿐, 무엇을 어떻게 공부했는지 확인하고 피드백해주는 사람이 없습니다.</p>
+      </div>
+      <div class="problem-card">
+        <div class="qmark">Q</div>
+        <h3>"기숙학원은 부담스럽고 멀어요"</h3>
+        <p>비용·거리·자유 박탈 모두가 부담입니다. 그렇다고 집에서는 도무지 공부 환경이 안 잡힙니다.</p>
+      </div>
+      <div class="problem-card">
+        <div class="qmark">Q</div>
+        <h3>"아이 학습을 매일 확인하기 어려워요"</h3>
+        <p>맞벌이 부모님께는 아이의 학습 태도와 출석을 매일 챙기는 것 자체가 큰 부담입니다.</p>
+      </div>
+      <div class="problem-card">
+        <div class="qmark">Q</div>
+        <h3>"방학에 더 무너집니다"</h3>
+        <p>아침에 못 일어나고 새벽까지 안 자며 생활 리듬이 깨집니다. 한 달이면 한 학기를 망칩니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SERVICE ================= -->
+<section id="service" class="section">
+  <div class="container">
+    <div class="center" style="max-width: 720px; margin: 0 auto 16px;">
+      <span class="eyebrow">스터디홈이란?</span>
+      <h2 class="h2">집에 있어도, <span class="underline-gold">학원처럼 관리받는</span> 화상 독서실</h2>
+    </div>
+
+    <div class="service-intro" style="margin-top: 56px;">
+      <div>
+        <h3 class="h3" style="color: var(--navy-900); margin-bottom: 12px;">"학원이 아닌, 매일의 관리자."</h3>
+        <p>
+          스터디홈은 강의를 하는 곳이 아닙니다. <b>학생이 책상에 앉아 정해진 시간 동안, 정해진 분량을 해내는지를 매일 화상으로 점검하고 관리하는 서비스</b>입니다.
+          학원에 다니지 않는 학생, 집에서 학습 환경이 안 잡히는 학생, 지방에서 양질의 관리를 받기 어려운 학생을 위해 만들어졌습니다.
+        </p>
+        <ul class="check-list">
+          <li>줌(Zoom) 기반 실시간 화상 자율학습실 운영</li>
+          <li>매일 입·퇴장 시 1:1 10분 코칭으로 목표·점검</li>
+          <li>출결·태도·학습량을 학부모에게 실시간 공유</li>
+          <li>벌점제 운영으로 책임감 있는 학습 습관 형성</li>
+        </ul>
+      </div>
+      <div class="service-visual">
+        <div class="stat-row">
+          <div class="stat-card">
+            <div class="stat-num">1:1</div>
+            <div class="stat-label">매일 화상 코칭</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">17–22시</div>
+            <div class="stat-label">평일 운영 시간</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">실시간</div>
+            <div class="stat-label">학부모 알림</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">전국</div>
+            <div class="stat-label">어디서나 가능</div>
+          </div>
+        </div>
+        <div style="margin-top: 16px; font-size: 13.5px; color: var(--muted); text-align: center;">
+          학원 등하원 시간·교통비·체력 소모 없이 집에서 바로 시작합니다.
+        </div>
+      </div>
+    </div>
+
+    <!-- 운영 플로우 -->
+    <div style="margin-top: 32px;">
+      <div class="center" style="margin-bottom: 24px;">
+        <span class="eyebrow">하루 운영 플로우</span>
+        <h3 class="h2" style="font-size: clamp(22px, 2.6vw, 30px);">매일 같은 시간, 같은 방식으로 흔들리지 않게.</h3>
+      </div>
+      <div class="flow">
+        <div class="flow-step">
+          <div class="flow-num">1</div>
+          <h4>줌 입실</h4>
+          <p>정시 화상 입장,<br />출석 자동 기록</p>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">2</div>
+          <h4>입장 코칭 (10분)</h4>
+          <p>오늘의 목표·분량<br />1:1 점검</p>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">3</div>
+          <h4>자율학습 모니터링</h4>
+          <p>화면 켜고 집중,<br />이탈·딴짓 관리</p>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">4</div>
+          <h4>퇴실 코칭 (10분)</h4>
+          <p>학습량 점검<br />내일 계획 수립</p>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">5</div>
+          <h4>학부모 리포트</h4>
+          <p>출결·태도·학습량<br />당일 공유</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DIFFERENTIATORS ================= -->
+<section id="diff" class="diff section">
+  <div class="container">
+    <div class="center" style="max-width: 720px; margin: 0 auto;">
+      <span class="eyebrow" style="background: rgba(196,163,90,0.18); color: var(--gold);">왜 스터디홈인가</span>
+      <h2 class="h2">자리만 빌려주는 독서실, 수업만 하는 학원과는 <span class="text-gold">다릅니다.</span></h2>
+      <p class="lead" style="margin-top: 16px;">스터디홈은 "관리"에 집중합니다. 학생이 매일 흔들리지 않게 잡아주는 4가지 약속.</p>
+    </div>
+    <div class="diff-grid">
+      <div class="diff-card">
+        <div class="diff-icon">👨‍🏫</div>
+        <h3>매일 1:1 코칭</h3>
+        <p>입·퇴장 시 매일 10분, 코치와 1:1 화상 코칭으로 오늘의 목표를 정하고 학습량을 점검합니다. 일주일에 한 번이 아니라 <b>매일</b>이기 때문에 흔들리지 않습니다.</p>
+      </div>
+      <div class="diff-card">
+        <div class="diff-icon">📲</div>
+        <h3>학부모 실시간 알림</h3>
+        <p>입실·퇴실·이탈·태도를 그날 그날 학부모님께 공유합니다. "오늘 우리 아이가 뭘 했는지" 매일 확인할 수 있어, 가정에서도 함께 코칭이 가능합니다.</p>
+      </div>
+      <div class="diff-card">
+        <div class="diff-icon">🌏</div>
+        <h3>전국 어디서나</h3>
+        <p>인터넷만 있으면 됩니다. 강남이든, 지방 소도시든, 시골이든 — <b>학원 인프라와 무관하게 동일한 관리</b>를 받을 수 있습니다. 등하원 시간·교통비·체력 소모도 0.</p>
+      </div>
+      <div class="diff-card">
+        <div class="diff-icon">⚖️</div>
+        <h3>책임 있는 벌점제</h3>
+        <p>지각·결석·학습 이탈에는 명확한 기준의 벌점이 부과됩니다. 단순한 통제가 아니라, 스스로 약속을 지키는 <b>학습 책임감</b>을 만드는 장치입니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRICING ================= -->
+<section id="pricing" class="section">
+  <div class="container">
+    <div class="center" style="max-width: 720px; margin: 0 auto;">
+      <span class="eyebrow">요금제</span>
+      <h2 class="h2">학생에 맞는 관리 강도를 <span class="underline-gold">선택하세요.</span></h2>
+      <p class="lead" style="margin-top: 16px;">관리만 받을지, 과목 코칭까지 받을지 — 5개 플랜 중 골라보세요. 첫 달은 체험형으로 가볍게 시작할 수 있습니다.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- 체험형 -->
+      <div class="price-card">
+        <div class="price-name">체험형</div>
+        <div class="price-tag">
+          <span class="price-num">15만원</span>
+          <span class="price-unit">/월</span>
+        </div>
+        <p class="price-desc">첫 달 한정. 가볍게 시작해보세요.</p>
+        <ul class="price-list">
+          <li>출석 관리</li>
+          <li>학습 태도 관리</li>
+          <li>학부모 일일 리포트</li>
+          <li>화상 자율학습실 입장</li>
+        </ul>
+        <a href="https://pf.kakao.com/_JCkxbX/chat" target="_blank" rel="noopener" class="price-cta">상담 신청</a>
+      </div>
+
+      <!-- 기본형 -->
+      <div class="price-card">
+        <div class="price-name">기본형</div>
+        <div class="price-tag">
+          <span class="price-num">30만원</span>
+          <span class="price-unit">/월</span>
+        </div>
+        <p class="price-desc">매일 1:1 코칭으로 루틴을 잡습니다.</p>
+        <ul class="price-list">
+          <li>체험형 모든 혜택 포함</li>
+          <li>매일 입·퇴장 10분 1:1 코칭</li>
+          <li>월 10시간 코칭</li>
+          <li>주간 학습 리포트</li>
+        </ul>
+        <a href="https://pf.kakao.com/_JCkxbX/chat" target="_blank" rel="noopener" class="price-cta">상담 신청</a>
+      </div>
+
+      <!-- 1과목 집중 (추천) -->
+      <div class="price-card featured">
+        <span class="price-badge">★ 추천 플랜</span>
+        <div class="price-name">1과목 집중</div>
+        <div class="price-tag">
+          <span class="price-num">40만원</span>
+          <span class="price-unit">/월</span>
+        </div>
+        <p class="price-desc">가장 많이 선택하는 플랜입니다.</p>
+        <ul class="price-list">
+          <li>기본형 모든 혜택 포함</li>
+          <li>주 1회 1시간 과목 코칭</li>
+          <li>과목별 학습 계획 수립</li>
+          <li>약점 진단 및 보완</li>
+        </ul>
+        <a href="https://pf.kakao.com/_JCkxbX/chat" target="_blank" rel="noopener" class="price-cta">카카오톡 상담</a>
+      </div>
+
+      <!-- 2과목 집중 -->
+      <div class="price-card">
+        <div class="price-name">2과목 집중</div>
+        <div class="price-tag">
+          <span class="price-num">50만원</span>
+          <span class="price-unit">/월</span>
+        </div>
+        <p class="price-desc">관리 + 2과목 집중 코칭.</p>
+        <ul class="price-list">
+          <li>기본형 모든 혜택 포함</li>
+          <li>주 2회 1시간 과목 코칭</li>
+          <li>주력 과목 2개 동시 관리</li>
+          <li>월간 성취도 리포트</li>
+        </ul>
+        <a href="https://pf.kakao.com/_JCkxbX/chat" target="_blank" rel="noopener" class="price-cta">상담 신청</a>
+      </div>
+
+      <!-- 방학 특별 -->
+      <div class="price-card">
+        <div class="price-name">방학 특별</div>
+        <div class="price-tag">
+          <span class="price-num">45만원</span>
+          <span class="price-unit">/월</span>
+        </div>
+        <p class="price-desc">방학에 무너지지 않는 루틴.</p>
+        <ul class="price-list">
+          <li>미라클모닝 8시 기상체크</li>
+          <li>9–22시 풀데이 관리</li>
+          <li>매일 1:1 코칭</li>
+          <li>방학 학습 플랜 수립</li>
+        </ul>
+        <a href="https://pf.kakao.com/_JCkxbX/chat" target="_blank" rel="noopener" class="price-cta">상담 신청</a>
+      </div>
+    </div>
+
+    <p class="price-note">* 모든 요금은 부가세 별도이며, 정확한 시작일·플랜 변경은 카카오톡 상담을 통해 안내드립니다.</p>
+  </div>
+</section>
+
+<!-- ================= HOURS ================= -->
+<section id="hours" class="hours section">
+  <div class="container">
+    <div class="center" style="max-width: 720px; margin: 0 auto;">
+      <span class="eyebrow">운영 시간</span>
+      <h2 class="h2">학교·학원 일정에 맞춰 <span class="underline-gold">유연하게.</span></h2>
+    </div>
+    <div class="hours-grid">
+      <div class="hours-card">
+        <div class="hours-icon">📚</div>
+        <h3>평일</h3>
+        <div class="hours-time">17:00 – 22:00</div>
+        <p>학교·학원 끝나고 바로 입장.<br />집에서의 저녁 학습을 책임집니다.</p>
+      </div>
+      <div class="hours-card">
+        <div class="hours-icon">🌅</div>
+        <h3>주말</h3>
+        <div class="hours-time">09:00 – 22:00</div>
+        <p>주말 풀타임 운영으로<br />주중 부족했던 학습을 보충합니다.</p>
+      </div>
+      <div class="hours-card">
+        <div class="hours-icon">☀️</div>
+        <h3>방학</h3>
+        <div class="hours-time">08:00 – 22:00</div>
+        <p>아침부터 밤까지 풀데이 관리.<br />방학에 무너지지 않습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section id="faq" class="section">
+  <div class="container">
+    <div class="center" style="max-width: 720px; margin: 0 auto;">
+      <span class="eyebrow">FAQ</span>
+      <h2 class="h2">자주 묻는 질문</h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>학원도 같이 다녀도 되나요?</summary>
+        <div class="faq-body">물론입니다. 학원 일정 이후 시간에 스터디홈으로 입실해 자율학습과 복습을 관리받는 학생이 많습니다. 오히려 학원 효과를 극대화하는 데 도움이 됩니다.</div>
+      </details>
+      <details class="faq-item">
+        <summary>줌(Zoom) 사용이 익숙하지 않아도 괜찮나요?</summary>
+        <div class="faq-body">처음 등록 시 안내해드리며, 기본적인 입장·카메라 켜기만 가능하면 됩니다. 어려워하실 경우 첫 입실에 코치가 1:1로 도와드립니다.</div>
+      </details>
+      <details class="faq-item">
+        <summary>카메라를 계속 켜고 있어야 하나요?</summary>
+        <div class="faq-body">네, 자율학습 시간 동안은 카메라를 켜는 것이 원칙입니다. 학생의 사생활은 보호되며, 학습 모니터링 목적에서만 사용됩니다. 지정된 휴식 시간에는 카메라를 끌 수 있습니다.</div>
+      </details>
+      <details class="faq-item">
+        <summary>1과목·2과목 집중에서는 어떤 과목을 받을 수 있나요?</summary>
+        <div class="faq-body">국어·영어·수학·과학·사회 등 주요 과목 중에서 선택 가능합니다. 학생의 학년·수준·목표에 맞춰 코치를 매칭해드리며, 자세한 내용은 상담 시 안내드립니다.</div>
+      </details>
+      <details class="faq-item">
+        <summary>벌점제는 어떻게 운영되나요?</summary>
+        <div class="faq-body">지각·무단결석·학습 이탈·휴대폰 사용 등에 대해 사전 공지된 기준으로 벌점이 부과됩니다. 누적 시 학부모 안내, 일정 기준 초과 시 코치와의 면담이 진행됩니다. 처벌이 아닌 책임 있는 학습 습관 형성이 목적입니다.</div>
+      </details>
+      <details class="faq-item">
+        <summary>중간에 플랜을 변경할 수 있나요?</summary>
+        <div class="faq-body">가능합니다. 매월 단위로 플랜 업그레이드·다운그레이드가 가능하며, 변경 신청은 다음 달 시작 1주일 전까지 카카오톡으로 알려주시면 됩니다.</div>
+      </details>
+      <details class="faq-item">
+        <summary>어떤 학생에게 적합한가요?</summary>
+        <div class="faq-body">학원에 다니지 않는 중·고등학생, 집에서 공부 환경이 잘 잡히지 않는 학생, 지방·소외 지역에서 양질의 관리를 받기 어려운 학생, 그리고 자기주도 학습 습관을 만들고 싶은 모든 학생에게 적합합니다.</div>
+      </details>
+      <details class="faq-item">
+        <summary>상담은 어떻게 진행되나요?</summary>
+        <div class="faq-body">아래 카카오톡 상담 버튼을 누르시면 채널 친구 추가 후 바로 상담이 시작됩니다. 학생의 학년·현재 학습 상황·목표를 알려주시면 가장 적합한 플랜을 안내해드립니다.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FINAL CTA ================= -->
+<section id="cta" class="final-cta">
+  <div class="container">
+    <span class="eyebrow" style="background: rgba(196,163,90,0.18); color: var(--gold);">지금 시작하세요</span>
+    <h2 class="h2">아이의 오늘부터, 매일 흔들리지 않는 공부 루틴을.</h2>
+    <p>1분 상담으로 우리 아이에게 맞는 플랜을 안내해드립니다.<br />부담 없이 카카오톡으로 문의해보세요.</p>
+    <div class="cta-row">
+      <a href="https://pf.kakao.com/_JCkxbX/chat" target="_blank" rel="noopener" class="btn btn-kakao" id="kakaoBtn">
+        <span class="kakao-icon">K</span>
+        카카오톡 채널 상담하기
+      </a>
+    </div>
+    <div class="hero-trust">
+      <div><b>무료</b> 상담</div>
+      <div><b>1:1</b> 맞춤 플랜 안내</div>
+      <div><b>당일</b> 답변</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="logo">
+      <svg viewBox="0 0 420 78" width="185" height="33" xmlns="http://www.w3.org/2000/svg" aria-label="Study Home">
+        <g transform="translate(210,0)">
+          <path fill="none" stroke="currentColor" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" d="M40 18 L74 3 L108 18"/>
+          <text y="66" text-anchor="middle" font-family="Inter, Pretendard, -apple-system, BlinkMacSystemFont, sans-serif" font-weight="700" font-size="48" fill="currentColor" letter-spacing="-0.5">Study<tspan dx="6">Home</tspan></text>
+        </g>
+      </svg>
+    </div>
+    <div class="footer-links">
+      <a href="#service">서비스</a>
+      <a href="#pricing">요금제</a>
+      <a href="#faq">FAQ</a>
+      <a href="#cta">상담</a>
+    </div>
+    <div>© 2026 StudyHome. All rights reserved.</div>
+  </div>
+</footer>
+
+
+</body>
+</html>
